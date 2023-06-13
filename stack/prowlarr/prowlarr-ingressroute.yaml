@@ -1,0 +1,19 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: prowlarr
+  # namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+    # - web
+  routes:
+    - match: Host(`prowlarr.localhost`)
+      kind: Rule
+      middlewares:
+        - name: headers-default
+      services:
+        - name: prowlarr
+          namespace: default
+          port: 9696

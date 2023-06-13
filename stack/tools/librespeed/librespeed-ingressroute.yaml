@@ -1,0 +1,19 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: librespeed
+  # namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+    # - web
+  routes:
+    - match: Host(`librespeed.localhost`)
+      kind: Rule
+      middlewares:
+        - name: headers-default
+          # # namespace: traefik
+      services:
+        - name: librespeed
+          port: 80

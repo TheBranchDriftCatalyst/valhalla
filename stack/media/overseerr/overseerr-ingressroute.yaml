@@ -1,0 +1,19 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: overseerr
+  # namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+    # - web
+  routes:
+    - match: Host(`overseerr.localhost`)
+      kind: Rule
+      middlewares:
+        - name: headers-default
+      services:
+        - name: overseerr
+          namespace: default
+          port: 5055

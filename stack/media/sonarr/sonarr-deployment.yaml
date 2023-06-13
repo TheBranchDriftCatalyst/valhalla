@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarr-deployment
+  labels:
+    app: sonarr
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: sonarr
+  template:
+    metadata:
+      labels:
+        app: sonarr
+    spec:
+      containers:
+      - name: sonarr
+        image: linuxserver/sonarr
+        ports:
+        - containerPort: 8989

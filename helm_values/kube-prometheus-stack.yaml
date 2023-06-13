@@ -1,0 +1,47 @@
+# https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
+
+alertmanager:
+  alertmanagerSpec:
+    storageSpec:
+      volumeClaimTemplate:
+        metadata:
+          name: alertmanager
+        spec:
+          storageClassName: "nfs-ephemeral"
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi
+          # selector:
+          #   service: kube-prometheus-kube-prome-alertmanager
+            
+prometheus:
+  prometheusSpec:
+    storageSpec:
+      volumeClaimTemplate:
+        metadata:
+          name: prometheus
+        spec:
+          storageClassName: "nfs-ephemeral"
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi
+          # selector: 
+          #   service: kube-prometheus-kube-prome-alertmanager
+          
+grafana:
+  grafanaSpec:
+    storageSpec:
+      volumeClaimTemplate:
+        metadata:
+          name: grafana
+        spec:
+          storageClassName: "nfs-ephemeral"
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi
+          # selector: 
+          #   service: kube-prometheus-grafana
+          

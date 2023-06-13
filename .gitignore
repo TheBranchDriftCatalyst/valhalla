@@ -1,0 +1,10 @@
+services/
+*/.DS_Store
+node_modules
+*.log
+.idea
+infra/certs/
+certs/
+access.log
+old/
+.envrc

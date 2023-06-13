@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: librespeed-deployment
+  labels:
+    app: librespeed
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: librespeed
+  template:
+    metadata:
+      labels:
+        app: librespeed
+    spec:
+      containers:
+      - name: librespeed
+        image: ghcr.io/linuxserver/librespeed
+        ports:
+        - containerPort: 80

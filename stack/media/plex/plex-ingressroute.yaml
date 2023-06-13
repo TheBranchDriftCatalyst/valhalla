@@ -1,0 +1,19 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: plex
+  # namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+    # - web
+  routes:
+    - match: Host(`plex.localhost`)
+      kind: Rule
+      middlewares:
+        - name: headers-default
+      services:
+        - name: plex
+          namespace: default
+          port: 80

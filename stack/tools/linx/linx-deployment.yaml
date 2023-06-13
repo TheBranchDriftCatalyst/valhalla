@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: linx-deployment
+  labels:
+    app: linx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: linx
+  template:
+    metadata:
+      labels:
+        app: linx
+    spec:
+      containers:
+      - name: linx
+        image: andreimarcu/linx-server
+        ports:
+        - containerPort: 8080

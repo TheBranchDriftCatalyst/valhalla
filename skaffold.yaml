@@ -1,0 +1,108 @@
+apiVersion: skaffold/v4beta5
+kind: Config
+metadata:
+  name: drogon
+manifests:
+  rawYaml:
+    - ./stack/*.yaml
+    - ./stack/**/*.yaml
+    # - ./modules/**/*.yaml
+
+
+
+deploy:
+  helm:
+    releases:
+    # STORAGE DRIVER CONFIGURATION
+    # - nfs-ephemeral, iscsi-ephemeral, nfs-persistent, iscsi-persistent
+    # For a given env/profile we are going to create different storage-classes with the above names, or 1 with multiple aliases
+    # 
+    # nfs-ephemeral storage class
+    # 
+    - name: democratic-csi
+      createNamespace: true
+      repo: https://democratic-csi.github.io/charts/
+      remoteChart: democratic-csi
+      valuesFiles:
+        - ./helm_values/nfs-ephemeral.yaml
+    # 
+    # Traefik Proxy
+    #
+    - name: traefik
+      repo: https://traefik.github.io/charts
+      remoteChart: traefik
+      createNamespace: true
+      # namespace: traefik
+      valuesFiles:
+        - ./helm_values/traefik.yml
+      setValues:
+        dashboard.enabled: true
+        dashboard.domain: "traefik.localhost"
+        dashboard.ingressRoute: "true"
+        ingressRoute.dashboard.entryPoints: ['websecure']
+    - name: kubernetes-dashboard
+      createNamespace: true
+      repo:  https://kubernetes.github.io/dashboard
+      remoteChart: kubernetes-dashboard
+    # 
+    # kube-prometheus
+    #
+    - name: kube-prometheus
+      createNamespace: true
+      repo: https://prometheus-community.github.io/helm-charts
+      remoteChart: kube-prometheus-stack
+      valuesFiles:
+        - ./helm_values/kube-prometheus-stack.yaml
+    # 
+    # iscsi-ephemeral storage class
+    #
+    # - name: democratic-csi
+    #   createNamespace: true
+    #   repo: https://democratic-csi.github.io/charts/
+    #   remoteChart: democratic-csi
+    #   valuesFiles:
+    #     - ./helm_values/iscsi-ephemeral.yaml
+    #
+    # After helm deploy hooks
+    #
+    hooks:
+      before:
+        - host:
+            command: ["sh", "-c", "echo helm pre-deploy host hook running on $(hostname)!"]
+      after:
+        - host:
+            command: ["sh", "-c", "echo helm post-deploy host hook running on $(hostname)!"]
+# profiles:
+#   # IN localhsot mode, we are going to
+#   - name: truenas
+#     deploy:
+#       helm:
+#         releases:
+
+#     patches:
+#       # 1: Remove all the democratic-csi helm charts
+#       # 2: Add all the mock local storage-classes
+#       - op: remove
+#         path: deploy/helm/releases/0
+#       # - op: remove
+#       #   path: deploy/helm/releases/1
+
+portForward:
+  #  TODO: move these to the traefik folder as services (skaffold will auto port forward)
+  - resourceType: service
+    resourceName: kubernetes-dashboard
+    namespace: default
+    port: 443
+    localPort: 8443
+  - resourceType: service
+    resourceName: traefik
+    namespace: default
+    port: 443
+    localPort: 443
+  - resourceType: service
+    resourceName: traefik
+    namespace: default
+    port: 80
+    localPort: 80
+
+

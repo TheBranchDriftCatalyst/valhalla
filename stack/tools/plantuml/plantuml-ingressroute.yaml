@@ -1,0 +1,19 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: plantuml
+  # namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+    # - web
+  routes:
+    - match: Host(`plantuml.localhost`)
+      kind: Rule
+      middlewares:
+        - name: headers-default
+      services:
+        - name: plantuml
+          namespace: default
+          port: 8080

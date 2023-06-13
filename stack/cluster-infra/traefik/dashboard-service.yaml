@@ -1,0 +1,15 @@
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: traefik-dashboard
+#   # namespace: traefik
+# spec:
+#   ports:
+#     - port: 8080
+#       protocol: TCP
+#   selector:
+#     app: traefik
+#   type: ClusterIP
+
+
+# dont think this is needed

@@ -1,0 +1,27 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: databases
+  labels:
+    name: databases
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: traefik
+  labels:
+    name: traefik
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: monitoring
+  labels:
+    name: monitoring
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: kubernetes-dashboard
+  labels:
+    name: kubernetes-dashboard

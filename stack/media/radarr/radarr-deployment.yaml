@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: radarr-deployment
+  labels:
+    app: radarr
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: radarr
+  template:
+    metadata:
+      labels:
+        app: radarr
+    spec:
+      containers:
+      - name: radarr
+        image: containous/radarr:latest
+        ports:
+        - containerPort: 8989
