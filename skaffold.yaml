@@ -4,34 +4,19 @@ metadata:
   name: drogon
 manifests:
   rawYaml:
-    - ./stack/*.yaml
-    - ./stack/**/*.yaml
-    # - ./modules/**/*.yaml
-
-
+    - ./stacks/namespaces.yaml
+    - ./stacks/cluster-infra/**/*.yaml
+    # - ./stacks/media/**/*.yaml
+    - ./stacks/tools/**/*.yaml
 
 deploy:
   helm:
     releases:
-    # STORAGE DRIVER CONFIGURATION
-    # - nfs-ephemeral, iscsi-ephemeral, nfs-persistent, iscsi-persistent
-    # For a given env/profile we are going to create different storage-classes with the above names, or 1 with multiple aliases
-    # 
-    # nfs-ephemeral storage class
-    # 
-    - name: democratic-csi
-      createNamespace: true
-      repo: https://democratic-csi.github.io/charts/
-      remoteChart: democratic-csi
-      valuesFiles:
-        - ./helm_values/nfs-ephemeral.yaml
-    # 
-    # Traefik Proxy
-    #
+    # HELM: Traefik Proxy
     - name: traefik
       repo: https://traefik.github.io/charts
       remoteChart: traefik
-      createNamespace: true
+      # createNamespace: true
       # namespace: traefik
       valuesFiles:
         - ./helm_values/traefik.yml
@@ -40,31 +25,25 @@ deploy:
         dashboard.domain: "traefik.localhost"
         dashboard.ingressRoute: "true"
         ingressRoute.dashboard.entryPoints: ['websecure']
+    #
+    # HELM: kubernetes-dashboard
+    #
     - name: kubernetes-dashboard
-      createNamespace: true
+      # createNamespace: true
+      # namespace: kubernetes-dashboard
       repo:  https://kubernetes.github.io/dashboard
       remoteChart: kubernetes-dashboard
     # 
-    # kube-prometheus
+    # HELM: kube-prometheus
     #
     - name: kube-prometheus
-      createNamespace: true
+      # createNamespace: true
+      # namespace: monitoring
       repo: https://prometheus-community.github.io/helm-charts
       remoteChart: kube-prometheus-stack
       valuesFiles:
         - ./helm_values/kube-prometheus-stack.yaml
-    # 
-    # iscsi-ephemeral storage class
-    #
-    # - name: democratic-csi
-    #   createNamespace: true
-    #   repo: https://democratic-csi.github.io/charts/
-    #   remoteChart: democratic-csi
-    #   valuesFiles:
-    #     - ./helm_values/iscsi-ephemeral.yaml
-    #
-    # After helm deploy hooks
-    #
+    # Helm Hooks
     hooks:
       before:
         - host:
@@ -72,21 +51,60 @@ deploy:
       after:
         - host:
             command: ["sh", "-c", "echo helm post-deploy host hook running on $(hostname)!"]
-# profiles:
-#   # IN localhsot mode, we are going to
-#   - name: truenas
-#     deploy:
-#       helm:
-#         releases:
 
-#     patches:
-#       # 1: Remove all the democratic-csi helm charts
-#       # 2: Add all the mock local storage-classes
-#       - op: remove
-#         path: deploy/helm/releases/0
-#       # - op: remove
-#       #   path: deploy/helm/releases/1
-
+profiles:
+  - name: truenas-storage-classes
+    # STORAGE DRIVER CONFIGURATION
+    # - nfs-ephemeral, iscsi-ephemeral, nfs-persistent, iscsi-persistent
+    # For a given env/profile we are going to create different storage-classes with the above names, or 1 with multiple aliases
+    # storage-clases provided:
+    #   - nfs-ephemeral, 
+    #   - iscsi-ephemeral, 
+    #   - nfs-persistentm, 
+    #   - iscsi-persistent
+    patches:
+      - op: add
+        path: /deploy/helm/releases/-
+        value:
+          name: democratic-csi
+          repo: https://democratic-csi.github.io/charts/
+          remoteChart: democratic-csi
+          valuesFiles:
+            - ./modules/valhalla-envs/values/nfs-ephemeral.yaml
+      - op: add
+        path: /deploy/helm/releases/-
+        value:
+          name: democratic-csi
+          repo: https://democratic-csi.github.io/charts/
+          remoteChart: democratic-csi
+          valuesFiles:
+            - ./modules/valhalla-envs/values/nfs-persistent.yaml
+      - op: add
+        path: /deploy/helm/releases/-
+        value:
+          name: democratic-csi
+          repo: https://democratic-csi.github.io/charts/
+          remoteChart: democratic-csi
+          valuesFiles:
+            - ./modules/valhalla-envs/values/iscsi-ephemeral.yaml
+      - op: add
+        path: /deploy/helm/releases/-
+        value:
+          name: democratic-csi
+          repo: https://democratic-csi.github.io/charts/
+          remoteChart: democratic-csi
+          valuesFiles:
+            - ./modules/valhalla-envs/values/iscsi-persistent.yaml
+  - name: local-storage-classes
+    # TODO: WIP
+    manifests:
+      rawYaml:
+        - ./local-storage-classes/*.yaml
+  # Cloudflare DDNS
+  - name: ddns
+    manifests:
+      rawYaml:
+        - ./stacks/cloudflare-ddns/*.yaml
 portForward:
   #  TODO: move these to the traefik folder as services (skaffold will auto port forward)
   - resourceType: service

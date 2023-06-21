@@ -11,7 +11,8 @@
     "typescript": "^5.1.3"
   },
   "scripts": {
-    "dev": "sudo skaffold dev --port-forward;",
+    "setup-cluster": "minikube start --profile local",
+    "dev": "sudo skaffold dev --port-forward -p ;",
     "token:admin": "kubectl -n kubernetes-dashboard create token admin-user",
     "clean": "k8 delete all --all; k8 delete crd --all;"
   },

@@ -1,0 +1,18 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ghost
+  # namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`ghost.localhost`)
+      kind: Rule
+      middlewares:
+        - name: headers-default
+      services:
+        - name: ghost
+          namespace: default
+          port: 2368
