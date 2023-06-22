@@ -7,11 +7,11 @@ alertmanager:
         metadata:
           name: alertmanager
         spec:
-          storageClassName: "nfs-ephemeral"
-          accessModes: ["ReadWriteOnce"]
+          storageClassName: "persistent-iscsi"
+          accessModes: ["ReadWriteMany"]
           resources:
             requests:
-              storage: 50Gi
+              storage: 75Gi
           # selector:
           #   service: kube-prometheus-kube-prome-alertmanager
             
@@ -22,8 +22,8 @@ prometheus:
         metadata:
           name: prometheus
         spec:
-          storageClassName: "nfs-ephemeral"
-          accessModes: ["ReadWriteOnce"]
+          storageClassName: "persistent-iscsi"
+          accessModes: ["ReadWriteMany"]
           resources:
             requests:
               storage: 50Gi
@@ -37,11 +37,11 @@ grafana:
         metadata:
           name: grafana
         spec:
-          storageClassName: "nfs-ephemeral"
-          accessModes: ["ReadWriteOnce"]
+          storageClassName: "persistent-iscsi"
+          accessModes: ["ReadWriteMany"]
           resources:
             requests:
-              storage: 50Gi
+              storage: 25Gi
           # selector: 
           #   service: kube-prometheus-grafana
           

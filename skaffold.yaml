@@ -4,14 +4,16 @@ metadata:
   name: drogon
 manifests:
   rawYaml:
-    - ./stacks/namespaces.yaml
-    - ./stacks/cluster-infra/**/*.yaml
+    # - ./stacks/namespaces.yaml
+    # - ./stacks/cluster-infra/**/*.yaml
+    - ./stacks/cluster-infra/traefik/*.yaml
     # - ./stacks/media/**/*.yaml
-    - ./stacks/tools/**/*.yaml
+    # - ./stacks/tools/**/*.yaml
+    - ./stacks/test-nfspvc.yaml
 
 deploy:
   helm:
-    releases:
+    releases: 
     # HELM: Traefik Proxy
     - name: traefik
       repo: https://traefik.github.io/charts
@@ -25,24 +27,6 @@ deploy:
         dashboard.domain: "traefik.localhost"
         dashboard.ingressRoute: "true"
         ingressRoute.dashboard.entryPoints: ['websecure']
-    #
-    # HELM: kubernetes-dashboard
-    #
-    - name: kubernetes-dashboard
-      # createNamespace: true
-      # namespace: kubernetes-dashboard
-      repo:  https://kubernetes.github.io/dashboard
-      remoteChart: kubernetes-dashboard
-    # 
-    # HELM: kube-prometheus
-    #
-    - name: kube-prometheus
-      # createNamespace: true
-      # namespace: monitoring
-      repo: https://prometheus-community.github.io/helm-charts
-      remoteChart: kube-prometheus-stack
-      valuesFiles:
-        - ./helm_values/kube-prometheus-stack.yaml
     # Helm Hooks
     hooks:
       before:
@@ -57,6 +41,8 @@ profiles:
     # STORAGE DRIVER CONFIGURATION
     # - nfs-ephemeral, iscsi-ephemeral, nfs-persistent, iscsi-persistent
     # For a given env/profile we are going to create different storage-classes with the above names, or 1 with multiple aliases
+    # TODO:
+    # - this needs a cleanuphook to remove the storage classes
     # storage-clases provided:
     #   - nfs-ephemeral, 
     #   - iscsi-ephemeral, 
@@ -66,52 +52,76 @@ profiles:
       - op: add
         path: /deploy/helm/releases/-
         value:
-          name: democratic-csi
+          name: snapshot-controller
           repo: https://democratic-csi.github.io/charts/
-          remoteChart: democratic-csi
-          valuesFiles:
-            - ./modules/valhalla-envs/values/nfs-ephemeral.yaml
+          remoteChart: snapshot-controller
+          namespace: 'storage'
+          createNamespace: true
+          # valuesFiles:
+            # - ./modules/valhalla-envs/values/nfs.yaml
       - op: add
         path: /deploy/helm/releases/-
         value:
-          name: democratic-csi
+          name: iscsi
           repo: https://democratic-csi.github.io/charts/
           remoteChart: democratic-csi
+          namespace: 'storage'
+          createNamespace: true
           valuesFiles:
-            - ./modules/valhalla-envs/values/nfs-persistent.yaml
+            - ./modules/valhalla-envs/values/iscsi.yaml
       - op: add
         path: /deploy/helm/releases/-
         value:
-          name: democratic-csi
+          name: nfs
           repo: https://democratic-csi.github.io/charts/
           remoteChart: democratic-csi
+          namespace: 'storage'
+          createNamespace: true
           valuesFiles:
-            - ./modules/valhalla-envs/values/iscsi-ephemeral.yaml
-      - op: add
-        path: /deploy/helm/releases/-
-        value:
-          name: democratic-csi
-          repo: https://democratic-csi.github.io/charts/
-          remoteChart: democratic-csi
-          valuesFiles:
-            - ./modules/valhalla-envs/values/iscsi-persistent.yaml
-  - name: local-storage-classes
-    # TODO: WIP
-    manifests:
-      rawYaml:
-        - ./local-storage-classes/*.yaml
+            - ./modules/valhalla-envs/values/nfs.yaml
+
+  # - name: local-storage-classes
+  # TODO: WIP
   # Cloudflare DDNS
   - name: ddns
-    manifests:
-      rawYaml:
-        - ./stacks/cloudflare-ddns/*.yaml
+    patches:
+      - op: add
+        path: /manifests/rawYaml/-
+        value: ./stacks/cloudflare-ddns/*.yaml
+  - name: monitoring
+    patches:
+      - op: add
+        path: /manifests/rawYaml/-
+        value: ./stacks/monitoring/**/*.yaml
+      - op: add
+        path: /deploy/helm/releases/-
+        value:
+          # HELM: kubernetes-dashboard
+          #
+          name: kubernetes-dashboard
+          createNamespace: true
+          namespace: kubernetes-dashboard
+          repo:  https://kubernetes.github.io/dashboard
+          remoteChart: kubernetes-dashboard
+      - op: add
+        path: /deploy/helm/releases/-
+        value:
+          # 
+          # HELM: kube-prometheus
+          #
+          name: kube-prometheus
+          createNamespace: true
+          repo: https://prometheus-community.github.io/helm-charts
+          remoteChart: kube-prometheus-stack
+          valuesFiles:
+            - ./helm_values/kube-prometheus-stack.yaml
 portForward:
   #  TODO: move these to the traefik folder as services (skaffold will auto port forward)
-  - resourceType: service
-    resourceName: kubernetes-dashboard
-    namespace: default
-    port: 443
-    localPort: 8443
+  # - resourceType: service
+  #   resourceName: kubernetes-dashboard
+  #   namespace: default
+  #   port: 443
+  #   localPort: 8443
   - resourceType: service
     resourceName: traefik
     namespace: default

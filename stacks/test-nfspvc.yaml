@@ -1,16 +1,83 @@
 # test-claim-nfs.yaml
+# kind: PersistentVolumeClaim
+# apiVersion: v1
+# metadata:
+#   name: ephemeral-nfs-test
+#   annotations:
+#     volume.beta.kubernetes.io/storage-class: "nfs-ephemeral"
+# spec:
+#   storageClassName: nfs-ephemeral
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 2Gi
+---
+# test-claim-nfs.yaml
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: special-sauce-testing
+  name: persistent-nfs-test
   annotations:
-    volume.beta.kubernetes.io/storage-class: "nfs-ephemeral"
+    volume.beta.kubernetes.io/storage-class: "persistent-nfs"
 spec:
-  storageClassName: nfs-ephemeral
+  storageClassName: persistent-nfs
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
       storage: 2Gi
-
-      
+# ---
+# test-claim-nfs.yaml
+# kind: PersistentVolumeClaim
+# apiVersion: v1
+# metadata:
+#   name: ephemeral-iscsi-test
+#   annotations:
+#     volume.beta.kubernetes.io/storage-class: "iscsi-ephemeral"
+# spec:
+#   storageClassName: iscsi-ephemeral
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 2Gi
+---
+# test-claim-iscsi.yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: persistent-iscsi-test
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "persistent-iscsi"
+spec:
+  storageClassName: persistent-iscsi
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+# ---
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: nfs-manual
+# spec:
+#   accessModes:
+#     # - ReadWriteMany
+#     - ReadOnlyMany
+#   persistentVolumeReclaimPolicy: Retain
+#   mountOptions:
+#     - nfsvers=3
+#     - nolock
+#     - noatime
+#   csi:
+#     driver: org.democratic-csi.node-manual
+#     readOnly: false
+#     fsType: nfs
+#     volumeHandle: movies-volumes  # make sure it's a unique id in the cluster
+#     volumeAttributes:
+#       server: truenas.localdomain
+#       share: /mnt/megapool/media/movies
+#       node_attach_driver: nfs
+#       provisioner_driver: node-manual

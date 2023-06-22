@@ -12,9 +12,11 @@
   },
   "scripts": {
     "setup-cluster": "minikube start --profile local",
-    "dev": "sudo skaffold dev --port-forward -p ;",
+    "delete-cluster": "minikube delete --profile local",
+    "dev": "sudo skaffold dev --port-forward -p truenas-storage-classes;",
+    "prod": "sudo skaffold deploy --port-forward -p truenas-storage-classes,ddns;",
     "token:admin": "kubectl -n kubernetes-dashboard create token admin-user",
-    "clean": "k8 delete all --all; k8 delete crd --all;"
+    "clean": "yarn delete-cluster; yarn setup-cluster;"
   },
   "workspaces": [
     "modules/*"
