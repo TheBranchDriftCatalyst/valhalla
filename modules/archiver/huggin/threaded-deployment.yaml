@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.28.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: threaded
+  name: threaded
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: threaded
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.28.0 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/archiver-default: "true"
+        io.kompose.service: threaded
+    spec:
+      containers:
+        - args:
+            - /scripts/init
+            - bin/threaded.rb
+          env:
+            - name: APP_SECRET_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  key: APP_SECRET_TOKEN
+                  name: secrets-env
+            - name: HUGINN_DATABASE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: HUGINN_DATABASE_NAME
+                  name: postgres-env
+            - name: HUGINN_DATABASE_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  key: HUGINN_DATABASE_PASSWORD
+                  name: postgres-env
+            - name: HUGINN_DATABASE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: HUGINN_DATABASE_USERNAME
+                  name: postgres-env
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  key: POSTGRES_PASSWORD
+                  name: postgres-env
+            - name: POSTGRES_PORT_5432_TCP_ADDR
+              valueFrom:
+                configMapKeyRef:
+                  key: POSTGRES_PORT_5432_TCP_ADDR
+                  name: postgres-env
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  key: POSTGRES_USER
+                  name: postgres-env
+          image: ghcr.io/huginn/huginn-single-process
+          name: threaded
+          resources: {}
+      restartPolicy: Always
+status: {}

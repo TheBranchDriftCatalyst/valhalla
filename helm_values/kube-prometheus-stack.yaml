@@ -1,47 +1,64 @@
-# https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
+# # https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
 
-alertmanager:
-  alertmanagerSpec:
-    storageSpec:
-      volumeClaimTemplate:
-        metadata:
-          name: alertmanager
-        spec:
-          storageClassName: "persistent-iscsi"
-          accessModes: ["ReadWriteMany"]
-          resources:
-            requests:
-              storage: 75Gi
-          # selector:
-          #   service: kube-prometheus-kube-prome-alertmanager
+# alertmanager:
+#   alertmanagerSpec:
+#     storageSpec:
+#       volumeClaimTemplate:
+#         metadata:
+#           name: alertmanager
+#         spec:
+#           storageClassName: "persistent-iscsi"
+#           accessModes: ["ReadWriteMany"]
+#           resources:
+#             requests:
+#               storage: 75Gi
+#           # selector:
+#           #   service: kube-prometheus-kube-prome-alertmanager
             
+# prometheus:
+#   prometheusSpec:
+#     storageSpec:
+#       volumeClaimTemplate:
+#         metadata:
+#           name: prometheus
+#         spec:
+#           storageClassName: "persistent-iscsi"
+#           accessModes: ["ReadWriteMany"]
+#           resources:
+#             requests:
+#               storage: 50Gi
+#           # selector: 
+#           #   service: kube-prometheus-kube-prome-alertmanager
+          
+# grafana:
+#   grafanaSpec:
+#     storageSpec:
+#       volumeClaimTemplate:
+#         metadata:
+#           name: grafana
+#         spec:
+#           storageClassName: "persistent-iscsi"
+#           accessModes: ["ReadWriteMany"]
+#           resources:
+#             requests:
+#               storage: 25Gi
+#           # selector: 
+#           #   service: kube-prometheus-grafana
+alertmanager:
+  alertmanagerspec:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: persistent-iscsi
+
+
 prometheus:
-  prometheusSpec:
-    storageSpec:
-      volumeClaimTemplate:
-        metadata:
-          name: prometheus
-        spec:
-          storageClassName: "persistent-iscsi"
-          accessModes: ["ReadWriteMany"]
-          resources:
-            requests:
-              storage: 50Gi
-          # selector: 
-          #   service: kube-prometheus-kube-prome-alertmanager
-          
+  prometheusspec:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: persistent-iscsi
+
 grafana:
-  grafanaSpec:
-    storageSpec:
-      volumeClaimTemplate:
-        metadata:
-          name: grafana
-        spec:
-          storageClassName: "persistent-iscsi"
-          accessModes: ["ReadWriteMany"]
-          resources:
-            requests:
-              storage: 25Gi
-          # selector: 
-          #   service: kube-prometheus-grafana
-          
+  grafanaspec:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: persistent-iscsi

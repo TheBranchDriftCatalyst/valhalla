@@ -1,33 +1,28 @@
+# NOTE: This file is used by skaffold to deploy the stack to the cluster
+# I would prefer to seperate these files, but skaffold does not support this
+# in a particularly elegant manner.  Using requires.configs[] the child manifest.rawYaml
+# is not merged or run at all.  This is desired by the creators (imo ain elegant solution)
+# I am also unsure exactly how kustomize overlays are used here.  Or, how does skaffold 
+# know which overlay to utilize.  So, I am pretty much mashing everything into protocols.
+# But i expect kustomize will be used to manage the overlays in the future.
 apiVersion: skaffold/v4beta5
 kind: Config
 metadata:
   name: drogon
+
 manifests:
   rawYaml:
-    # - ./stacks/namespaces.yaml
-    # - ./stacks/cluster-infra/**/*.yaml
-    - ./stacks/cluster-infra/traefik/*.yaml
-    # - ./stacks/media/**/*.yaml
-    # - ./stacks/tools/**/*.yaml
     - ./stacks/test-nfspvc.yaml
 
 deploy:
   helm:
     releases: 
-    # HELM: Traefik Proxy
-    - name: traefik
-      repo: https://traefik.github.io/charts
-      remoteChart: traefik
-      # createNamespace: true
-      # namespace: traefik
-      valuesFiles:
-        - ./helm_values/traefik.yml
-      setValues:
-        dashboard.enabled: true
-        dashboard.domain: "traefik.localhost"
-        dashboard.ingressRoute: "true"
-        ingressRoute.dashboard.entryPoints: ['websecure']
-    # Helm Hooks
+      # Hate having to do this but see the issue for the reasoning:
+      # https://github.com/GoogleContainerTools/skaffold/issues/2741
+      - name: noop
+        repo: https://cowboysysop.github.io/charts/
+        remoteChart: whoami
+
     hooks:
       before:
         - host:
@@ -37,57 +32,103 @@ deploy:
             command: ["sh", "-c", "echo helm post-deploy host hook running on $(hostname)!"]
 
 profiles:
-  - name: truenas-storage-classes
-    # STORAGE DRIVER CONFIGURATION
-    # - nfs-ephemeral, iscsi-ephemeral, nfs-persistent, iscsi-persistent
-    # For a given env/profile we are going to create different storage-classes with the above names, or 1 with multiple aliases
-    # TODO:
-    # - this needs a cleanuphook to remove the storage classes
-    # storage-clases provided:
-    #   - nfs-ephemeral, 
-    #   - iscsi-ephemeral, 
-    #   - nfs-persistentm, 
-    #   - iscsi-persistent
+
+  - name: media
     patches:
+      - op: add
+        path: /manifests/rawYaml/-
+        value: ./stacks/media/**/*.yaml
+
+  - name: tools
+    patches:
+      - op: add
+        path: /manifests/rawYaml/-
+        value: ./stacks/tools/**/*.yaml
+
+  - name: local-sc
+    # activation:
+    #   - env: SKAFFOLD_ENV=local-sc
+    patches:
+      - op: add
+        path: /manifests/rawYaml/-
+        value: ./storage/local/*.yaml
+      - op: add
+        path: /manifests/rawYaml/-
+        value: ./storage/storage-namespace.yaml
+
+
+  - name: valhalla-sc
+    # activation:
+    #   - env: SKAFFOLD_ENV=valhalla-sc
+    patches: 
+      - op: add
+        path: /manifests/rawYaml/-
+        value: ./storage/valhalla/*.yaml
       - op: add
         path: /deploy/helm/releases/-
         value:
           name: snapshot-controller
           repo: https://democratic-csi.github.io/charts/
           remoteChart: snapshot-controller
-          namespace: 'storage'
+          namespace: storage
           createNamespace: true
-          # valuesFiles:
-            # - ./modules/valhalla-envs/values/nfs.yaml
       - op: add
         path: /deploy/helm/releases/-
         value:
           name: iscsi
           repo: https://democratic-csi.github.io/charts/
           remoteChart: democratic-csi
-          namespace: 'storage'
+          namespace: storage
           createNamespace: true
           valuesFiles:
-            - ./modules/valhalla-envs/values/iscsi.yaml
+            - ./storage/valhalla/democratic-csi-values/iscsi.yaml
       - op: add
         path: /deploy/helm/releases/-
         value:
           name: nfs
           repo: https://democratic-csi.github.io/charts/
           remoteChart: democratic-csi
-          namespace: 'storage'
+          namespace: storage
           createNamespace: true
           valuesFiles:
-            - ./modules/valhalla-envs/values/nfs.yaml
+            - ./storage/valhalla/democratic-csi-values/nfs.yaml
+          
+  - name: proxy
+    patches:
+      - op: add
+        path: /portForward/-
+        value:
+          resourceType: service
+          resourceName: traefik
+          namespace: default
+          port: 443
+          localPort: 443
+      - op: add
+        path: /manifests/rawYaml/-
+        value: ./stacks/cluster-infra/traefik/*.yaml
+      - op: add
+        path: /deploy/helm/releases/-
+        value: 
+          name: traefik
+          repo: https://traefik.github.io/charts
+          remoteChart: traefik
+          # createNamespace: true
+          # namespace: traefik
+          valuesFiles:
+            - ./helm_values/traefik.yml
+          setValues:
+            dashboard.enabled: true
+            dashboard.domain: "traefik.localhost"
+            dashboard.ingressRoute: "true"
+            ingressRoute.dashboard.entryPoints: ['websecure']
 
-  # - name: local-storage-classes
-  # TODO: WIP
   # Cloudflare DDNS
   - name: ddns
     patches:
       - op: add
         path: /manifests/rawYaml/-
         value: ./stacks/cloudflare-ddns/*.yaml
+
   - name: monitoring
     patches:
       - op: add

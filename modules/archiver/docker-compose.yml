@@ -1,0 +1,46 @@
+version: '2'
+
+networks:
+  proxy:
+    external:
+      name: drogon_proxy_network
+
+services:
+  postgres:
+    image: postgres:9.5
+    restart: always
+    environment:
+      - ./postgres.env
+    networks:
+      - services
+
+  huggin:
+    image: huginn/huginn
+    restart: always
+    ports:
+      - "3000:3000"
+    networks:
+      - proxy
+      - services
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.services.huginn.loadbalancer.server.port=3000"
+        # Internal Route
+        - "traefik.http.routers.huginn-internal.rule=Host(`huginn.$INTERNAL_HOST`)"
+        - "traefik.http.routers.huginn-internal.entrypoints=web"
+        - "traefik.http.routers.huginn-internal.middlewares=lan-ipwhitelist"
+        # External Route
+        - "traefik.http.routers.huginn-external.rule=Host(`huginn.$EXTERNAL_HOST`)"
+        - "traefik.http.routers.huginn-external.entrypoints=websecure"
+        - "traefik.http.routers.huginn-external.middlewares=basic-auth"
+        - "traefik.http.routers.huginn-external.tls.certresolver=letsencrypt"
+
+  threaded:
+    image: ghcr.io/huginn/huginn-single-process
+    command: /scripts/init bin/threaded.rb
+    restart: always
+    
+    environment:
+      - ./postgres.env
+      - ./secrets.env

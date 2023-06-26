@@ -1,0 +1,14 @@
+apiVersion: v1
+data:
+  HUGINN_DATABASE_NAME: huginn
+  HUGINN_DATABASE_PASSWORD: myhuginnpassword
+  HUGINN_DATABASE_USERNAME: huginn
+  POSTGRES_PASSWORD: myhuginnpassword
+  POSTGRES_PORT_5432_TCP_ADDR: postgres
+  POSTGRES_USER: huginn
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: postgres-postgres-env
+  name: postgres-env

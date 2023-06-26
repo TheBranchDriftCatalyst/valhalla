@@ -8,3 +8,4 @@ certs/
 access.log
 old/
 .envrc
+**/democratic-csi-values
