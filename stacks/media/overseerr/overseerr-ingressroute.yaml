@@ -3,7 +3,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: overseerr
-  # namespace: traefik
+  namespace: traefik
 spec:
   entryPoints:
     - websecure

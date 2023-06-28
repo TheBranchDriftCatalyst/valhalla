@@ -100,9 +100,17 @@ profiles:
         value:
           resourceType: service
           resourceName: traefik
-          namespace: default
+          namespace: traefik
           port: 443
           localPort: 443
+      - op: add
+        path: /portForward/-
+        value:
+          resourceType: service
+          resourceName: traefik
+          namespace: traefik
+          port: 80
+          localPort: 80
       - op: add
         path: /manifests/rawYaml/-
         value: ./stacks/cluster-infra/traefik/*.yaml
@@ -112,15 +120,15 @@ profiles:
           name: traefik
           repo: https://traefik.github.io/charts
           remoteChart: traefik
-          # createNamespace: true
-          # namespace: traefik
+          createNamespace: true
+          namespace: traefik
           valuesFiles:
             - ./helm_values/traefik.yml
           setValues:
             dashboard.enabled: true
             dashboard.domain: "traefik.localhost"
             dashboard.ingressRoute: "true"
-            ingressRoute.dashboard.entryPoints: ['websecure']
+            ingressRoute.dashboard.entryPoints: ['websecure', 'web']
 
   # Cloudflare DDNS
   - name: ddns
@@ -131,6 +139,28 @@ profiles:
 
   - name: monitoring
     patches:
+      # - op: add
+      #   path: /deploy/helm/releases/-
+      #   value:            
+      #     name: elk-stack
+      #     createNamespace: true
+      #     namespace: elk-stack
+      #     repo: https://helm.elastic.co
+      #     remoteChart: 
+      #     valuesFile:
+      #       - https://raw.githubusercontent.com/elastic/cloud-on-k8s/2.8/deploy/eck-stack/examples/elasticsearch/hot-warm-cold.yaml
+      #       - https://raw.githubusercontent.com/elastic/cloud-on-k8s/2.8/deploy/eck-stack/examples/kibana/http-configuration.yaml
+
+      # - op: add
+      #   path: /deploy/helm/releases/-
+      #   value:
+      #     name: elk-fleet
+      #     namespace: elk-stack
+      #     createNamespace: true
+      #     repo: https://helm.elastic.co
+      #     remoteChart: eck-stack
+      #     valuesFiles: 
+      #       - https://raw.githubusercontent.com/elastic/cloud-on-k8s/2.8/deploy/eck-stack/examples/agent/fleet-agents.yaml
       - op: add
         path: /manifests/rawYaml/-
         value: ./stacks/monitoring/**/*.yaml
@@ -156,22 +186,24 @@ profiles:
           remoteChart: kube-prometheus-stack
           valuesFiles:
             - ./helm_values/kube-prometheus-stack.yaml
+      
+    
 portForward:
   #  TODO: move these to the traefik folder as services (skaffold will auto port forward)
+  - resourceType: service
+    resourceName: kubernetes-dashboard
+    namespace: kubernetes-dashboard
+    port: 443
+    localPort: 8443
   # - resourceType: service
-  #   resourceName: kubernetes-dashboard
+  #   resourceName: traefik
   #   namespace: default
   #   port: 443
-  #   localPort: 8443
-  - resourceType: service
-    resourceName: traefik
-    namespace: default
-    port: 443
-    localPort: 443
-  - resourceType: service
-    resourceName: traefik
-    namespace: default
-    port: 80
-    localPort: 80
+  #   localPort: 443
+  # - resourceType: service
+  #   resourceName: traefik
+  #   namespace: default
+  #   port: 80
+  #   localPort: 80
 
 
