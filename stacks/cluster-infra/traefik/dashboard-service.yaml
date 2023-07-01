@@ -3,7 +3,7 @@
 # kind: Service
 # metadata:
 #   name: traefik-dashboard
-#   # namespace: traefik
+#   # namespace: default
 # spec:
 #   ports:
 #     - port: 8080

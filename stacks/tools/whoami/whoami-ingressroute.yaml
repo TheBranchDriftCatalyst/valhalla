@@ -3,7 +3,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: whoami
-  namespace: traefik
+  namespace: default
 spec:
   entryPoints:
     - websecure
@@ -13,7 +13,7 @@ spec:
       kind: Rule
       middlewares:
         - name: headers-default
-          namespace: traefik
+          namespace: default
       services:
         - name: whoami
           namespace: default

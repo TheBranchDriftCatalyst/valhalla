@@ -100,7 +100,7 @@ profiles:
         value:
           resourceType: service
           resourceName: traefik
-          namespace: traefik
+          namespace: default
           port: 443
           localPort: 443
       - op: add
@@ -108,7 +108,7 @@ profiles:
         value:
           resourceType: service
           resourceName: traefik
-          namespace: traefik
+          namespace: default
           port: 80
           localPort: 80
       - op: add
@@ -121,7 +121,7 @@ profiles:
           repo: https://traefik.github.io/charts
           remoteChart: traefik
           createNamespace: true
-          namespace: traefik
+          namespace: default
           valuesFiles:
             - ./helm_values/traefik.yml
           setValues:

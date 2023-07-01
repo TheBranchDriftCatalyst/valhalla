@@ -3,7 +3,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: ServersTransport
 metadata:
   name: kubernetes-dashboard-transport
-  # namespace: traefik
+  # namespace: default
 spec:
   serverName: kubernetes-dashboard
   insecureSkipVerify: true
