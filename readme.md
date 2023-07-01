@@ -1,15 +1,10 @@
 kubectl -n kubernetes-dashboard create token admin-user
 # Status
 
-Currently a refactor of my drogon home lab to utilzie kubernetes and skaffold.
+Currently a refactor of my drogon home lab to utilzie kubernetes + skaffold + helm.  Homelab hyper converged storage cluster.
 
 > This is only partially functional and until V1 is reached will continue to use the old repository drogon (private).
 
-This is a monorepo that does a few things.
-
-It runs drogon server (my home server)
-It runs my ephemeral staging enviroment
-It runs my private tools cluster
 
 ## TODO
 
@@ -29,18 +24,23 @@ static_configs:
 
 - [ ] create deployment for brainz
 - [ ] create deployment for chain
+- [ ] ghost + ghost theme
+- [ ] finish creating all manifests from folders
+    - [ ] media stack
+    - [ ] tools stack
+- [ ] centralized logging ELK stack probably
+- [ ] 
 
 ## Persistent Volumes using [Democratic-CSI](https://github.com/democratic-csi/democratic-csi)
 
 **Storage Class Names**
-- reclaimPolicy: DESTROY
-    - iscsi-ephemeral
-    - nfs-ephemeral
--  reclaimPolocy: 
 - nfs-persistent
 - iscsi-persistent
 
 > The values is kinda a pita to get and can be generated via the following snippet
+
+### Democratic CSI config values
+
 ```shell
 wget https://raw.githubusercontent.com/democratic-csi/charts/master/stable/democratic-csi/examples/freenas-nfs.yaml -O - | sed '/INLINE/,$d' > nfs.yaml
 wget https://raw.githubusercontent.com/democratic-csi/democratic-csi/master/examples/freenas-api-nfs.yaml -O - | sed -e 's/^/    /g' >> nfs.yaml
@@ -49,7 +49,6 @@ wget https://raw.githubusercontent.com/democratic-csi/democratic-csi/master/exam
 ```
 
 ## Dynamic Proxy with [Traefik](https://github.com/traefik/traefik-helm-chart)
-
 
 Provides **IngressRoute** CRD for dynamic proxy provisioning
 
