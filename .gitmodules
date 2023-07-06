@@ -1,5 +1,5 @@
-[submodule "modules/valhalla-envs"]
-	path = modules/valhalla-envs
+[submodule "modules/private_envs"]
+	path = modules/private_envs
 	url = git@github.com:TheBranchDriftCatalyst/valhalla-envs.git
 [submodule "modules/brainz"]
 	path = modules/brainz
@@ -7,6 +7,3 @@
 [submodule "modules/chain"]
 	path = modules/chain
 	url = git@github.com:TheBranchDriftCatalyst/chain.git
-[submodule "modules/archiver/huginn"]
-	path = modules/archiver/huginn
-	url = git@github.com:huginn/huginn.git
