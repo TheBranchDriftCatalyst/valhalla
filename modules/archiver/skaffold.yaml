@@ -1,7 +1,74 @@
+# NOTE: This file is used by skaffold to deploy the stack to the cluster
+# I would prefer to seperate these files, but skaffold does not support this
+# in a particularly elegant manner.  Using requires.configs[] the child manifest.rawYaml
+# is not merged or run at all.  This is desired by the creators (imo ain elegant solution)
+# I am also unsure exactly how kustomize overlays are used here.  Or, how does skaffold 
+# know which overlay to utilize.  So, I am pretty much mashing everything into protocols.
+# But i expect kustomize will be used to manage the overlays in the future.
 apiVersion: skaffold/v4beta5
 kind: Config
 metadata:
-  name: archiver
+  name: datawarehouse
+
 manifests:
   rawYaml:
-    - huggin/*.yaml
+    - ./datawarehouse/*.yaml
+    - ./datawarehouse/**/*.yaml
+
+deploy:
+  helm:
+    # flags:
+    #   install: 
+    #     - oci
+    releases: 
+      - name: mongodb-community-operator
+        repo: https://mongodb.github.io/helm-charts
+        namespace: mongodb
+        createNamespace: true
+        remoteChart: community-operator
+
+    hooks:
+      before:
+        - host:
+            command: ["sh", "-c", "echo helm pre-deploy host hook running on $(hostname)!"]
+      after:
+        - host:
+            command: ["sh", "-c", "echo helm post-deploy host hook running on $(hostname)!"]
+
+# profiles:
+#   - name: tools
+#     patches:
+#       - op: add
+#         path: /manifests/rawYaml/-
+#         value: ./stacks/tools/**/*.yaml
+#       - op: add
+#         path: /deploy/helm/releases/-
+#         value:
+#           # HELM: kubernetes-dashboard
+#           #
+#           name: kubernetes-dashboard
+#           createNamespace: true
+#           namespace: kubernetes-dashboard
+#           repo:  https://kubernetes.github.io/dashboard
+#           remoteChart: kubernetes-dashboard
+
+    
+# portForward:
+  #  TODO: move these to the traefik folder as services (skaffold will auto port forward)
+  # - resourceType: service
+  #   resourceName: kubernetes-dashboard
+  #   namespace: kubernetes-dashboard
+  #   port: 443
+  #   localPort: 8443
+  # - resourceType: service
+  #   resourceName: traefik
+  #   namespace: default
+  #   port: 443
+  #   localPort: 443
+  # - resourceType: service
+  #   resourceName: traefik
+  #   namespace: default
+  #   port: 80
+  #   localPort: 80
+
+

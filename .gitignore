@@ -8,4 +8,7 @@ certs/
 access.log
 old/
 .envrc
+
+# Some more files that i am working on
 **/democratic-csi-values
+storage_controllers/.local_sc

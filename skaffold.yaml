@@ -10,6 +10,10 @@ kind: Config
 metadata:
   name: drogon
 
+requires:
+  - configs: ["datawarehouse"]
+    path: ./modules/archiver/skaffold.yaml
+
 manifests:
   rawYaml:
     - ./stacks/test-nfspvc.yaml
@@ -32,13 +36,6 @@ deploy:
             command: ["sh", "-c", "echo helm post-deploy host hook running on $(hostname)!"]
 
 profiles:
-
-  - name: media
-    patches:
-      - op: add
-        path: /manifests/rawYaml/-
-        value: ./stacks/media/**/*.yaml
-
   - name: tools
     patches:
       - op: add
@@ -51,10 +48,10 @@ profiles:
     patches:
       - op: add
         path: /manifests/rawYaml/-
-        value: ./storage/local/*.yaml
+        value: ./storage_controllers/local/*.yaml
       - op: add
         path: /manifests/rawYaml/-
-        value: ./storage/storage-namespace.yaml
+        value: ./storage_controllers/storage-namespace.yaml
 
 
   - name: valhalla-sc
@@ -63,7 +60,7 @@ profiles:
     patches: 
       - op: add
         path: /manifests/rawYaml/-
-        value: ./storage/valhalla/*.yaml
+        value: ./storage_controllers/valhalla/*.yaml
       - op: add
         path: /deploy/helm/releases/-
         value:
@@ -81,7 +78,7 @@ profiles:
           namespace: storage
           createNamespace: true
           valuesFiles:
-            - ./storage/valhalla/democratic-csi-values/iscsi.yaml
+            - ./storage_controllers/valhalla/democratic-csi-values/iscsi.yaml
       - op: add
         path: /deploy/helm/releases/-
         value:
@@ -91,7 +88,7 @@ profiles:
           namespace: storage
           createNamespace: true
           valuesFiles:
-            - ./storage/valhalla/democratic-csi-values/nfs.yaml
+            - ./storage_controllers/valhalla/democratic-csi-values/nfs.yaml
           
   - name: proxy
     patches:

@@ -7,3 +7,6 @@
 [submodule "modules/chain"]
 	path = modules/chain
 	url = git@github.com:TheBranchDriftCatalyst/chain.git
+[submodule "modules/archiver/huginn"]
+	path = modules/archiver/huginn
+	url = git@github.com:huginn/huginn.git

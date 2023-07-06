@@ -6,7 +6,7 @@ Currently a refactor of my drogon home lab to utilzie kubernetes + skaffold + he
 > This is only partially functional and until V1 is reached will continue to use the old repository drogon (private).
 
 
-## TODO
+## Roadmap/TOdo
 
 - [ ] Add traefik and prometheus metrics scraping to prom:
 

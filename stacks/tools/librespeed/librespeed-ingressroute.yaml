@@ -9,7 +9,7 @@ spec:
     - websecure
     # - web
   routes:
-    - match: Host(`librespeed.localhost`)
+    - match: Host(`librespeed.localhost`) || Host(`librespeed.thebeast.localdomain.`)
       kind: Rule
       middlewares:
         - name: headers-default
