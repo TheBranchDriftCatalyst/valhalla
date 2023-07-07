@@ -17,9 +17,6 @@ manifests:
 
 deploy:
   helm:
-    # flags:
-    #   install: 
-    #     - oci
     releases: 
       - name: mongodb-community-operator
         repo: https://mongodb.github.io/helm-charts
@@ -48,27 +45,17 @@ deploy:
 #           #
 #           name: kubernetes-dashboard
 #           createNamespace: true
-#           namespace: kubernetes-dashboard
+#           namespace: kube-system
 #           repo:  https://kubernetes.github.io/dashboard
 #           remoteChart: kubernetes-dashboard
 
     
-# portForward:
+portForward:
   #  TODO: move these to the traefik folder as services (skaffold will auto port forward)
-  # - resourceType: service
-  #   resourceName: kubernetes-dashboard
-  #   namespace: kubernetes-dashboard
-  #   port: 443
-  #   localPort: 8443
-  # - resourceType: service
-  #   resourceName: traefik
-  #   namespace: default
-  #   port: 443
-  #   localPort: 443
-  # - resourceType: service
-  #   resourceName: traefik
-  #   namespace: default
-  #   port: 80
-  #   localPort: 80
+  - resourceType: service
+    resourceName: boomtime-db-svc
+    namespace: mongodb
+    port: 27017
+
 
 

@@ -13,7 +13,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: kubernetes-dashboard
-  namespace: kubernetes-dashboard
+  namespace: kube-system
 spec:
   entryPoints:                     
     - websecure
@@ -24,7 +24,7 @@ spec:
     services:                      
     - kind: Service 
       name: kubernetes-dashboard
-      # namespace: kubernetes-dashboard
+      # namespace: kube-system
       port: 443                     
       serversTransport: kubernetes-dashboard-transport
   # tls:                             

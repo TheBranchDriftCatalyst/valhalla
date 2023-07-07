@@ -8,10 +8,13 @@ verify_ssl = true
 [packages]
 requests = "*"
 ratelimiter = "*"
+ratelimit = "*"
 pymongo = "*"
 mock = "*"
 pytest = "*"
 mongomock = "*"
+tenacity = "*"
+pymongo-migrate = "*"
 
 [requires]
 python_version = "3.9"

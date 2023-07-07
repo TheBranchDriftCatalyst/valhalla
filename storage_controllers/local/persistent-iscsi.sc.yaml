@@ -1,18 +1,8 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  annotations:
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"storage.k8s.io/v1","kind":"StorageClass","metadata":{"annotations":{"storageclass.kubernetes.io/is-default-class":"true"},"labels":{"addonmanager.kubernetes.io/mode":"EnsureExists"},"name":"standard"},"provisioner":"k8s.io/minikube-hostpath"}
-    storageclass.kubernetes.io/is-default-class: "true"
-  creationTimestamp: "2023-06-26T16:42:27Z"
-  labels:
-    addonmanager.kubernetes.io/mode: EnsureExists
-  name: persistent-iscsi
-  resourceVersion: "273"
-  # uid: e13902e4-1fb3-40ec-88f8-977f62cf8af7
-provisioner: k8s.io/minikube-hostpath
-reclaimPolicy: Retain
-volumeBindingMode: Immediate
+  name: local-storage
+provisioner: kubernetes.io/host-path
+volumeBindingMode: WaitForFirstConsumer
 parameters:
-  path: /Users/djdaniels/code/active_workspace/valhalla/sc_volumes/iscsi
+  path: /Users/djdaniels/code/active_workspace/valhalla/storage_controllers/.local_sc/iscsi

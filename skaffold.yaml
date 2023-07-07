@@ -10,9 +10,9 @@ kind: Config
 metadata:
   name: drogon
 
-requires:
-  - configs: ["datawarehouse"]
-    path: ./modules/archiver/skaffold.yaml
+# requires:
+#   - configs: ["datawarehouse"]
+#     path: ./modules/archiver/skaffold.yaml
 
 manifests:
   rawYaml:
@@ -51,7 +51,7 @@ profiles:
         value: ./storage_controllers/local/*.yaml
       - op: add
         path: /manifests/rawYaml/-
-        value: ./storage_controllers/storage-namespace.yaml
+        value: ./storage_controllers/storage.namespace.yaml
 
 
   - name: valhalla-sc
@@ -78,7 +78,7 @@ profiles:
           namespace: storage
           createNamespace: true
           valuesFiles:
-            - ./storage_controllers/valhalla/democratic-csi-values/iscsi.yaml
+            - ./modules/private_envs/democratic-csi-values/iscsi.yaml
       - op: add
         path: /deploy/helm/releases/-
         value:
@@ -88,7 +88,7 @@ profiles:
           namespace: storage
           createNamespace: true
           valuesFiles:
-            - ./storage_controllers/valhalla/democratic-csi-values/nfs.yaml
+            - ./modules/private_envs/democratic-csi-values/nfs.yaml
           
   - name: proxy
     patches:
@@ -168,7 +168,7 @@ profiles:
           #
           name: kubernetes-dashboard
           createNamespace: true
-          namespace: kubernetes-dashboard
+          namespace: kube-system
           repo:  https://kubernetes.github.io/dashboard
           remoteChart: kubernetes-dashboard
       - op: add
@@ -189,7 +189,7 @@ portForward:
   #  TODO: move these to the traefik folder as services (skaffold will auto port forward)
   - resourceType: service
     resourceName: kubernetes-dashboard
-    namespace: kubernetes-dashboard
+    namespace: kube-system
     port: 443
     localPort: 8443
   # - resourceType: service
@@ -202,5 +202,3 @@ portForward:
   #   namespace: default
   #   port: 80
   #   localPort: 80
-
-

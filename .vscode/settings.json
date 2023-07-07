@@ -1,5 +1,10 @@
 {
     "yaml.schemas": {
         "https://json.schemastore.org/helmfile.json": "file:///Users/djdaniels/code/active_workspace/drogon/helm_values/iscsi.yaml"
-    }
+    },
+    "python.testing.pytestArgs": [
+        "."
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
 }
