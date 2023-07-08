@@ -1,0 +1,68 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: https://api.congress.gov/v3/endpoint?limit=250&api_key=ZD0obxN7tOY4aLUyla61rt69K7M3Hzo2Xd4gFxyC
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAEA6rmUgACpdSiovwiJSsFpdC87Lz88jyFotTi/NKi5FQrhdS8lIL8zLwSJa5aAAAA
+        AP//AwBZKeqiLQAAAA==
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Age:
+      - '0'
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 7e39b9531f96c3c6-SEA
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json
+      Date:
+      - Sat, 08 Jul 2023 16:32:33 GMT
+      Set-Cookie:
+      - __cf_bm=Nee1Tut.D7D67vW2fRoVN.DTnCj.pT1VV5tyy04ccrw-1688833953-0-AZOuR0AP3uVV6urVo/aE+hh7Z5Yh+LsLPO+GWZyVYsiBr4mJMO/ULV1cGVBLgSz0V2PwPNWStDqeKYLucKBSv5I=;
+        path=/; expires=Sat, 08-Jul-23 17:02:33 GMT; domain=.congress.gov; HttpOnly;
+        SameSite=None
+      Strict-Transport-Security:
+      - max-age=31536000; preload
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      Via:
+      - http/1.1 api-umbrella (ApacheTrafficServer [cMsSf ])
+      X-Api-Umbrella-Request-Id:
+      - c96pcgvotkqbalovvbqg
+      X-Cache:
+      - MISS
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Ratelimit-Limit:
+      - '1000'
+      X-Ratelimit-Remaining:
+      - '998'
+      X-Vcap-Request-Id:
+      - d086df7c-57f9-4fd2-6fe3-bc6c8a3772dd
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 404
+      message: Not Found
+version: 1

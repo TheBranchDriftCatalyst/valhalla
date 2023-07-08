@@ -1,3 +1,6 @@
+
+# ERD
+
 ```mermaid
 erDiagram
     CongressBill {
@@ -11,24 +14,79 @@ erDiagram
         string UpdateDateIncludingText
         string URL
     }
-
     LatestAction {
         string ActionDate
         string Text
     }
-
     CongressBill ||--o{ LatestAction : ""
-
-    S3ContentBillBucket {
-        string key pk, uk "Congress + Number + OriginChamberCode"
+    CommitteeReport {
+        string Citation
+        string URL
     }
-
-   S3ContentBillEmbeddingsBucket {
-        string key pk, uk "Congress + Number + OriginChamberCode"
+    CongressBill ||--o{ CommitteeReport : ""
+    CBOCostEstimate {
+        string Description
+        string PubDate
+        string Title
+        string URL
     }
+    CongressBill ||--o{ CBOCostEstimate : ""
+    Sponsor {
+        string BioguideId
+        string District
+        string FirstName
+        string FullName
+        string IsByRequest
+        string LastName
+        string MiddleName
+        string Party
+        string State
+        string URL
+    }
+    CongressBill ||--o{ Sponsor : ""
+    Law {
+        string Number
+        string Type
+    }
+    CongressBill ||--o{ Law : ""
+    PolicyArea {
+        string Name
+    }
+    CongressBill ||--o{ PolicyArea : ""
+    Cosponsor {
+        string BioguideId
+        string District
+        string FirstName
+        string FullName
+        string IsByRequest
+        string LastName
+        string MiddleName
+        string Party
+        string State
+        string URL
+    }
+    CongressBill ||--o{ Cosponsor : ""
 
 
     CongressBill ||--o| S3ContentBillBucket : ""
     S3ContentBillBucket ||--o{ S3ContentBillEmbeddingsBucket : ""
 ```
 
+# Class Diagram
+
+```mermaid
+
+classDiagram
+    class Bill {
+        test
+    }
+
+```
+
+# Sequence Diagram
+
+## 
+
+```mermaid
+
+```

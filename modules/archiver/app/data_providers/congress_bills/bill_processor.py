@@ -1,22 +1,27 @@
 import os
 import requests
-
 from pymongo.errors import DuplicateKeyError
-# from ratelimit import limits, sleep_and_retry
+from ratelimit import limits, sleep_and_retry
 from tenacity import (
     Retrying,
     stop_after_attempt,
     wait_random_exponential,
     retry_if_exception_type,
 )
-
+from app.data_providers.data_provider import DataProvider
+# from app.data_providers import DataProvider
 from app.storage_connectors.mongo_db_dataset_controller import MongoDBDatasetController
+from app.util.db_utils import DbUtils
 
 # TODO: once this is finalized a bit more, i want to extract the minimum required functionality of
 # of this class into a Abstract class that can be used for other data providers to enforce a common
 # interface for the data provider classes
-class BillProcessor(DataProvider):
+class BillProcessor(DbUtils, DataProvider):
 
+    def schedule(self):
+        # TODO: actually implement this at somepoint
+        return "0 0 * * *"
+    
     def __init__(self, api_key=None):
         self.mdbc = MongoDBDatasetController(
             "CongressDB", 
@@ -45,19 +50,11 @@ class BillProcessor(DataProvider):
 
         # Insert the new bill into the 'CongressBill' collection and eat any DuplicateKeyErrors
         self.safe_insert(self.mdbc.collections['CongressBill'], new_bill)
-
-    @staticmethod
-    def safe_insert(collection, data): 
-        # TODO: move this to a util mixin
-        try: 
-            collection.insert_one(data)
-        except DuplicateKeyError as e:
-            print(e)
         
     
     # @sleep_and_retry
-    # @limits(calls=5000, period=86400)  # API limit per day (86400 seconds)
-    def fetch_bill_data(self):
+    @limit(calls=5000, period=86400)  # API limit per day (86400 seconds)
+    def fetch_recent_bills(self):
         url = f"https://api.congress.gov/v3/bill?api_key={self.api_key}"
         response = requests.get(url)
 
@@ -74,8 +71,8 @@ class BillProcessor(DataProvider):
             retry=retry_if_exception_type(requests.exceptions.RequestException),  # Retry if RequestException occurs
         )
 
-        # Call the fetch_bill_data method with circuit breaker
+        # Call the fetch_recent_bills method with circuit breaker
         with circuit_breaker:
-            bill_data = self.fetch_bill_data()
+            bill_data = self.fetch_recent_bills()
             # Process the fetched bill data as needed
             self.process_bill(bill_data)

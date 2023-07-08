@@ -1,14 +1,9 @@
-# The Data Provider acts as the abstract class for the datasources feeding into
-# the archiver data warehouse.
-# from abc import abstractmethod, ABCMeta
-
-
 class DataProvider:
-    data_providers = []
+    DATA_PROVIDERS = []
 
     def __init__(self):
-        self.data_providers.append(self)
+        self.DATA_PROVIDERS.append(self)
 
-    # @abstractmethod
-    def schedule(self):
+    @classmethod
+    def schedule(cls):
         raise NotImplementedError

@@ -1,27 +1,56 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from your_module import MongoDBDatasetController  # replace with the actual module name
+import unittest
+from pymongo import MongoClient
+
+class DBTest(unittest.TestCase):
+    def setUp(self):
+        """This method is called before each test."""
+        pass  # If there's any setup to do before each test, do it here
+    
+    def tearDown(self):
+        """This method is called after each test."""
+        pass  # If there's any cleanup to do after each test, do it here
 
 class TestMongoDBDatasetController(unittest.TestCase):
+    def test_init(self):
+        # Create a mock MongoDB client
+        MongoDBDatasetController('test_dataset', ['collection1', 'collection2'])
+#         # Define a sample bill
+#         new_bill = {
+#             "congress": 117,
+#             "latestAction": {
+#                 "actionDate": "2022-04-06",
+#                 "text": "Became Public Law No: 117-108."
+#             },
+#             "number": "3076",
+#             "originChamber": "House",
+#             "originChamberCode": "H",
+#             "title": "Postal Service Reform Act of 2022",
+#             "type": "HR",
+#             "updateDate": "2022-09-29",
+#             "updateDateIncludingText": "2022-09-29T03:27:05Z",
+#             "url": "https://api.congress.gov/v3/bill/117/hr/3076?format=json"
+#         }
 
-    @patch('pymongo.MongoClient')
-    def test_init(self, mock_client):
-        # Mock the MongoClient
-        mock_db = MagicMock()
-        mock_client.return_value = mock_db
+#         # Call the method to test
+#         bp = BillProcessor(api_key="not_a_real_key")
+#         bp.process_bill(new_bill)
+        
+#         # bp.mdbc.collections['CongressDB'][]
+        
+#         # Check that the bill was inserted into the 'CongressBill' collection
+#         self.assertIsNotNone(bp.mdbc.collections['CongressBill'].find_one({
+#             "congress": 117, "number": "3076", "originChamberCode": "H"
+#         }))
 
-        # Define the dataset collections
-        dataset_collections = ['collection1', 'collection2']
+#         # Check that the latest action was inserted into the 'LatestAction' collection
+#         self.assertIsNotNone(bp.mdbc.collections['LatestAction'].find_one({
+#             "actionDate": "2022-04-06", "text": "Became Public Law No: 117-108."}))
 
-        # Create an instance of MongoDBDatasetController
-        controller = MongoDBDatasetController('test_env', 'test_dataset', dataset_collections)
+# if __name__ == '__main__':
+#     unittest.main()
 
-        # Check that the MongoClient was called with the correct arguments
-        mock_client.assert_called_once_with('mongodb://localhost:27017/test_env')
-
-        # Check that the collections attribute is correctly initialized
-        expected_collections = {name: mock_db[name] for name in dataset_collections}
-        self.assertEqual(controller.collections, expected_collections)
-
+    
 if __name__ == '__main__':
     unittest.main()

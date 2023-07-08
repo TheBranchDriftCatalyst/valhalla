@@ -6,10 +6,6 @@ class TestBillProcessor(unittest.TestCase):
 
     def test_process_bill(self):
         # Create a mock MongoDB client
-        client = MongoClient()
-
-        # Create an instance of your BillProcessor class
-        bill_processor = BillProcessor(api_key="not_a_real_key")
 
         # Define a sample bill
         new_bill = {
@@ -29,15 +25,19 @@ class TestBillProcessor(unittest.TestCase):
         }
 
         # Call the method to test
-        bill_processor.process_bill(new_bill)
-
+        bp = BillProcessor(api_key="not_a_real_key")
+        bp.process_bill(new_bill)
+        
+        # bp.mdbc.collections['CongressDB'][]
+        
         # Check that the bill was inserted into the 'CongressBill' collection
-        self.assertIsNotNone(client['CongressDB']['CongressBill'].find_one({
+        self.assertIsNotNone(bp.mdbc.collections['CongressBill'].find_one({
             "congress": 117, "number": "3076", "originChamberCode": "H"
         }))
 
         # Check that the latest action was inserted into the 'LatestAction' collection
-        self.assertIsNotNone(client['CongressDB']['LatestAction'].find_one({"actionDate": "2022-04-06", "text": "Became Public Law No: 117-108."}))
+        self.assertIsNotNone(bp.mdbc.collections['LatestAction'].find_one({
+            "actionDate": "2022-04-06", "text": "Became Public Law No: 117-108."}))
 
 if __name__ == '__main__':
     unittest.main()

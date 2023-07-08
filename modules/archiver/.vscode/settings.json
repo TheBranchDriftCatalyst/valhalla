@@ -1,11 +1,12 @@
 {
     "python.testing.pytestArgs": [
-        "data_providers"
+        "app"
     ],
-    "python.testing.unittestEnabled": true,
-    "python.testing.pytestEnabled": false,
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
     "cSpell.words": [
         "mdbc",
+        "mongomock",
         "pymongo"
     ],
     "python.testing.unittestArgs": [
@@ -14,5 +15,6 @@
         "./app",
         "-p",
         "test_*.py"
-    ]
+    ],
+    "python.analysis.typeCheckingMode": "basic"
 }

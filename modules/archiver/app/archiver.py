@@ -1,6 +1,6 @@
 from logging import getLogger
 
-from s3_storage_connector import S3StorageConnector
+from app.storage_connectors.s3_storage_connector import S3StorageConnector
 
 
 class Archiver:

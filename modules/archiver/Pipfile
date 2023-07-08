@@ -7,14 +7,16 @@ verify_ssl = true
 
 [packages]
 requests = "*"
-ratelimiter = "*"
-ratelimit = "*"
 pymongo = "*"
 mock = "*"
 pytest = "*"
 mongomock = "*"
 tenacity = "*"
-pymongo-migrate = "*"
+mongoengine = "*"
+sqlalchemy = "*"
+requests-ratelimiter = "*"
+vcrpy = "*"
+pytest-vcr = "*"
 
 [requires]
 python_version = "3.9"
