@@ -17,6 +17,8 @@ sqlalchemy = "*"
 requests-ratelimiter = "*"
 vcrpy = "*"
 pytest-vcr = "*"
+alembic = "*"
+minio = "*"
 
 [requires]
 python_version = "3.9"

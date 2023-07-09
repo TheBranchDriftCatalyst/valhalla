@@ -7,7 +7,8 @@
     "cSpell.words": [
         "mdbc",
         "mongomock",
-        "pymongo"
+        "pymongo",
+        "sqlalchemy"
     ],
     "python.testing.unittestArgs": [
         "-v",

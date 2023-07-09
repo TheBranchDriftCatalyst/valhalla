@@ -1,9 +1,12 @@
 class DataProvider:
-    DATA_PROVIDERS = []
+    DATA_PROVIDERS = set()
 
     def __init__(self):
-        self.DATA_PROVIDERS.append(self)
+        self.DATA_PROVIDERS.add(__name__)
 
     @classmethod
     def schedule(cls):
+        raise NotImplementedError
+    
+    def run(self):
         raise NotImplementedError

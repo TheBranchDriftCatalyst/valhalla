@@ -4,6 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
+
 class CongressBill(Base):
     __tablename__ = 'congress_bills'
 
