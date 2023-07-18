@@ -1,5 +1,5 @@
 services/
-*/.DS_Store
+.DS_Store
 node_modules
 *.log
 .idea

@@ -19,6 +19,11 @@ vcrpy = "*"
 pytest-vcr = "*"
 alembic = "*"
 minio = "*"
+apscheduler = "*"
+fastapi = "*"
+pydantic = "*"
+celery = "*"
+redis = "*"
 
 [requires]
 python_version = "3.9"
