@@ -1,9 +1,0 @@
-version: '3'
-
-tasks:
-  "migrate":
-    cmds:
-      - pymongo-migrate migrate -u 'mongodb://localhost/dev' {{.CLI_ARGS}}
-  # "migrate:down":
-  #   cmds:
-  #     - pymongo-migrate down -u 'mongodb://localhost/dev {{.CLI_ARGS}}'

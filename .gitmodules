@@ -1,9 +1,3 @@
-[submodule "modules/private_envs"]
-	path = modules/private_envs
+[submodule "private_envs"]
+	path = private_envs
 	url = git@github.com:TheBranchDriftCatalyst/valhalla-envs.git
-[submodule "modules/brainz"]
-	path = modules/brainz
-	url = git@github.com:TheBranchDriftCatalyst/brainz.git
-[submodule "modules/chain"]
-	path = modules/chain
-	url = git@github.com:TheBranchDriftCatalyst/chain.git
