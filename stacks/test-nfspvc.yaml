@@ -12,7 +12,6 @@
 #   resources:
 #     requests:
 #       storage: 2Gi
----
 # test-claim-nfs.yaml
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -23,7 +22,7 @@ metadata:
 spec:
   storageClassName: persistent-nfs
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
   resources:
     requests:
       storage: 2Gi
@@ -53,7 +52,7 @@ metadata:
 spec:
   storageClassName: persistent-iscsi
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
   resources:
     requests:
       storage: 2Gi

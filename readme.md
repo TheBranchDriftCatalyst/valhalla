@@ -22,14 +22,10 @@ static_configs:
     - targets: ['infra_traefik:8080']
 ```
 
-- [ ] create deployment for brainz
-- [ ] create deployment for chain
-- [ ] ghost + ghost theme
-- [ ] finish creating all manifests from folders
-    - [ ] media stack
-    - [ ] tools stack
-- [ ] centralized logging ELK stack probably
-- [ ] 
+# Upgrade and Deployment Checklist
+
+Need to get this repo in a working state once that is done:
+  - probably use nfs share mounts for now and move to democratic CSI later
 
 ## Persistent Volumes using [Democratic-CSI](https://github.com/democratic-csi/democratic-csi)
 

@@ -8,7 +8,6 @@ spec:
     matchLabels:
       app: cloudflare-ddns
       environment: drogon
-  strategy: {}
   template:
     metadata:
       labels:
@@ -16,15 +15,21 @@ spec:
         environment: drogon
     spec:
       containers:
-        - env:
-            - name: API_KEY
-              value: $CF_API_KEY
-            - name: PROXIED
-              value: "true"
-            - name: ZONE
-              value: k8-lab-external
-          image: oznu/cloudflare-ddns:latest
-          name: cloudflare-ddns
-          resources: {}
+      - env:
+        - name: API_KEY
+          value: $CF_API_KEY
+        - name: PROXIED
+          value: "true"
+        - name: ZONE
+          value: k8-lab-external
+        image: oznu/cloudflare-ddns:latest
+        name: cloudflare-ddns
+        resources:
+          limits:
+            cpu: "1"
+            memory: "512Mi"
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
       restartPolicy: Always
 status: {}

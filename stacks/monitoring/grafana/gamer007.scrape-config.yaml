@@ -1,0 +1,16 @@
+# TODO: This can be moved at some point, it is a POC of a working scrape config.
+# Wanted to test this out and did it on my windows pc for my other homelab stack
+# will leave it here as an example
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: gamer007-prom-scrape-config
+  namespace: monitoring
+  labels:
+    prometheus: system-monitoring-prometheus
+spec:
+  staticConfigs:
+  - labels:
+      job: prometheus
+    targets:
+    - gamer007.localdomain:9182
