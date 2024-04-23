@@ -1,0 +1,30 @@
+apiVersion: skaffold/v4beta10
+kind: Config
+metadata:
+  name: monitoring
+
+manifests:
+  rawYaml:
+  # - ./grafana.ingress-route.yaml # This is picked up by the traefik skaffold
+  - ./gamer007.scrape-config.yaml
+
+deploy:
+  helm:
+    releases:
+    # HELM: kube-prometheus
+    - name: prom-stack
+      repo: https://prometheus-community.github.io/helm-charts
+      remoteChart: kube-prometheus-stack
+      createNamespace: true
+      namespace: monitoring
+      setValues:
+        serviceMonitor:
+          enabled: true
+          additionalLabels:
+            release: prom-stack
+        prometheus.prometheusSpec.scrapeConfigSelector:
+          # This is required otherwise the scrapeconfigs were not being provisioned
+          matchLabels:
+            prometheus: system-monitoring-prometheus
+            # valuesFiles:
+            # - ./helm_values/kube-prometheus-stack.yaml

@@ -30,10 +30,10 @@ spec:
         - containerPort: 32412 #/udp
         - containerPort: 32413 #/udp
         - containerPort: 32414 #/udp
-      resources:
-        requests:
-          cpu: "1"
-          memory: "4Gi"
-        limits:
-          cpu: "2"
-          memory: "12Gi"
+        resources:
+          requests:
+            cpu: "1"
+            memory: "4Gi"
+          limits:
+            cpu: "2"
+            memory: "12Gi"

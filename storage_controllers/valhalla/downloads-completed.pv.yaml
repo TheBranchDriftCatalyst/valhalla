@@ -1,19 +1,18 @@
----
 apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: downloads-completed
 spec:
   accessModes:
-    - ReadOnlyMany
+  - ReadOnlyMany
   capacity:
     storage: 10Ti
   volumeMode: Filesystem
-  persistentVolumeReclaimPolicy: Retain
+  persistentVolumeReclaimPolicy: Recycle
   storageClassName: nfs
   mountOptions:
-    - hard
-    - nfsvers=4
+  - hard
+  - nfsvers=4
   nfs:
     path: /megapool/downloads/completed
     server: truenas.localdomain

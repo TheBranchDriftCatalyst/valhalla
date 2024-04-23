@@ -1,0 +1,45 @@
+apiVersion: skaffold/v4beta10
+kind: Config
+metadata:
+  name: traefik
+
+manifests:
+  rawYaml:
+  - ./traefik/manifests/*.ingress-route.yaml
+
+deploy:
+  helm:
+    releases:
+    - name: traefik
+      repo: https://traefik.github.io/charts
+      remoteChart: traefik
+      createNamespace: true
+      namespace: default
+      valuesFiles:
+      - ./traefik/traefik.values.yml
+      setValues:
+        dashboard.enabled: true
+        dashboard.domain: "traefik.localhost"
+        dashboard.ingressRoute: "true"
+        ingressRoute.dashboard.entryPoints: ['websecure', 'web']
+
+portForward:
+- resourceType: service
+  resourceName: traefik
+  namespace: default
+  port: 443
+  localPort: 443
+- resourceType: service
+  resourceName: traefik
+  namespace: default
+  port: 80
+  localPort: 80
+
+---
+apiVersion: skaffold/v4beta10
+kind: Config
+metadata:
+  name: ddns
+manifests:
+  rawYaml:
+  - ./ddns/cloudflare-ddns.deployment.yaml
