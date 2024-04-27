@@ -1,20 +1,19 @@
-.PHONY: setup-cluster delete-cluster dev prod token-admin clean
+.PHONY: lint setup-cluster delete-cluster dev clean
+
+lint:
+	@kube-score score
+	@kubescan scan
 
 setup-cluster:
-	minikube start --profile local
+	@minikube start
+	@minikube addons enable metrics-server
 
 delete-cluster:
-	minikube delete --profile local
+	@minikube delete
 
 dev:
-	sudo skaffold dev --port-forward -p truenas-storage-classes;
-
-prod:
-	sudo skaffold deploy --port-forward -p truenas-storage-classes,ddns;
-
-token-admin:
-	kubectl -n kubernetes-dashboard create token admin-user
+	@sudo skaffold dev
 
 clean:
-	make delete-cluster
-	make setup-cluster
+	@$(MAKE) delete-cluster
+	@$(MAKE) setup-cluster

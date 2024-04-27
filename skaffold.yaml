@@ -1,10 +1,13 @@
 apiVersion: skaffold/v4beta10
 kind: Config
-requires:
-- configs: ["monitoring"]
-  path: ./stacks/monitoring/skaffold.yaml
-- configs: ["traefik", "ddns"]
-  path: ./stacks/cluster-infra/skaffold.yaml
+# requires:
+# - configs: ["monitoring"]
+#   path: ./stacks/monitoring/skaffold.yaml
+# - configs: ["infra"]
+#   path: ./stacks/cluster-infra/skaffold.yaml
+# - configs: ['cluster-secrets']
+#   path: ./secrets/skaffold.yaml
+
 metadata:
   name: valhalla
 
@@ -29,12 +32,12 @@ deploy:
       - host:
           command: ["sh", "-c", "echo '\n*****************************************************\n'"]
 
-profiles:
-- name: tools
-  patches:
-  - op: add
-    path: /manifests/rawYaml/-
-    value: ./stacks/tools/**/*.yaml
+# profiles:
+# - name: tools
+#   patches:
+#   - op: add
+#     path: /manifests/rawYaml/-
+#     value: ./stacks/tools/**/*.yaml
 
 portForward:
 - resourceName: headlamp

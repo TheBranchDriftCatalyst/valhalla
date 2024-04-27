@@ -59,3 +59,13 @@ Installed VIA helm
 Installed VIA helm
 
 
+# PITA
+
+Skaffold kinda sucks at handling multiple skaffold files.  They dont give you really good options ofr splitting up the files.  The main issue is that skaffold only runs the base most manifests.rawYaml NOT the dependent ones....This is... stupid... and they dont intend to fix it.  Not really sure how to use skaffold properly in the patter i am but for now we will run skaffold X frigging times for every damn service....
+
+runDistro 
+
+ls -a **/skaffold.yaml | sort
+
+
+

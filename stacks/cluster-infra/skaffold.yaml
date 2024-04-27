@@ -1,27 +1,111 @@
 apiVersion: skaffold/v4beta10
 kind: Config
 metadata:
-  name: traefik
+  name: infra
 
 manifests:
   rawYaml:
-  - ./traefik/manifests/*.ingress-route.yaml
+  - ./traefik/manifests/*.yaml
+
+# resourceSelector:
+#   allow:
+#   - groupKind: "*.traefik.io"
+#     image: [".*"]
+#     labels: [".*"]
+#   - groupKind: "*.traefik.containo.us"
+#     image: [".*"]
+#     labels: [".*"]
 
 deploy:
   helm:
     releases:
-    - name: traefik
-      repo: https://traefik.github.io/charts
-      remoteChart: traefik
+    # TODO: need to install cert-manager at some point as well
+
+    - name: cert-manager
+      repo: https://charts.jetstack.io
+      remoteChart: cert-manager
       createNamespace: true
       namespace: default
-      valuesFiles:
-      - ./traefik/traefik.values.yml
       setValues:
-        dashboard.enabled: true
-        dashboard.domain: "traefik.localhost"
-        dashboard.ingressRoute: "true"
-        ingressRoute.dashboard.entryPoints: ['websecure', 'web']
+        installCRDs: true
+        prometheus:
+          enabled: true
+        webhook:
+          enabled: true
+        cainjector:
+          enabled: true
+          # extraArgs:
+          #   - --dns01-recursive-nameservers=
+
+    - name: traefik
+      # repo: https://traefik.github.io/charts
+      remoteChart: traefik/traefik
+      createNamespace: true
+      namespace: default
+      setValues:
+        ingressRoute.dashboard:
+          entryPoints: ['websecure', 'web']
+          matchRule: "Host(`traefik.localhost`)"
+
+    - name: authentik
+      remoteChart: authentik/authentik
+      namespace: default
+      setValues:
+        authentik:
+          secret_key: "PleaseGenerateASecureKey"
+          # This sends anonymous usage-data, stack traces on errors and
+          # performance data to sentry.io, and is fully opt-in
+          error_reporting.enabled: true
+          postgresql.password: "turbopookipanda"
+        server:
+          server.metrics.serviceMonitor: true
+          ingress:
+            # Specify kubernetes ingress controller class name
+            ingressClassName: traefik
+            enabled: true
+            hosts:
+            - authentik.localhost
+        postgresql:
+          enabled: true
+          auth.password: "turbopookipanda"
+        redis.enabled: true
+
+    # - name: keycloak
+    #   # repo: https://charts.bitnami.com/bitnami
+    #   # repo: oci://registry-1.docker.io/bitnamicharts
+    #   remoteChart: bitnami/keycloak
+    #   createNamespace: true
+    #   namespace: default
+    #   setValues:
+    #     ingress.enabled: true
+    #     adminIngress:
+    #       enabled: true
+    #       hostname: keycloak.localhost
+    #       # keycloakConfigCli:
+    #       #   configuration:
+    #       #     "realm" : "master",
+    #       #     "attributes": {
+    #       #       "frontendUrl": "https://keycloak.localhost"
+    #       #     }
+
+profiles:
+- name: cloudflare-ddns
+  patches:
+  - op: add
+    path: /deploy/helm/releases/-/
+    value:
+    - name: kubernetes-cloudflare-ddns
+      repo: https://charts.kubito.dev
+      remoteChart: kubernetes-cloudflare-ddns
+      setValues:
+        existingSecret: 'cloudflare'
+
+      # setValuesTemplate:
+      #   secretes:
+      #     authKey: "{{ .CLOUDFLARE_AUTH_KEY }}"
+      #     dnsRecord: "{{ .CLOUDFLARE_DNS_RECORD }}"
+      #     recordId: "{{ .CLOUDFLARE_RECORD_ID }}"
+      #     zoneId: "{{ .CLOUDFLARE_ZONE_ID }}"
 
 portForward:
 - resourceType: service
@@ -34,12 +118,3 @@ portForward:
   namespace: default
   port: 80
   localPort: 80
-
----
-apiVersion: skaffold/v4beta10
-kind: Config
-metadata:
-  name: ddns
-manifests:
-  rawYaml:
-  - ./ddns/cloudflare-ddns.deployment.yaml

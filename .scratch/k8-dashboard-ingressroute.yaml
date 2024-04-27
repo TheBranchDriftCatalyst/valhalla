@@ -1,0 +1,30 @@
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: kubernetes-dashboard-transport
+  # namespace: default
+spec:
+  serverName: kubernetes-dashboard
+  insecureSkipVerify: true
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: kubernetes-dashboard
+  namespace: kube-system
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`k8.localhost`)
+    priority: 10
+    services:
+    - kind: Service
+      name: kubernetes-dashboard
+      # namespace: kube-system
+      port: 443
+      serversTransport: kubernetes-dashboard-transport
+      # tls:
+    # certResolver: dns-cloudflare
