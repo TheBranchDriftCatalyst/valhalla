@@ -7,11 +7,11 @@ manifests:
   rawYaml:
   - ./traefik/manifests/*.yaml
 
-# resourceSelector:
-#   allow:
-#   - groupKind: "*.traefik.io"
-#     image: [".*"]
-#     labels: [".*"]
+resourceSelector:
+  allow:
+  - groupKind: "*.traefik.io"
+    image: [".*"]
+    labels: [".*"]
 #   - groupKind: "*.traefik.containo.us"
 #     image: [".*"]
 #     labels: [".*"]
@@ -29,6 +29,8 @@ deploy:
       setValues:
         installCRDs: true
         prometheus:
+          # servicemonitor: true
+          # namespace: monitoring
           enabled: true
         webhook:
           enabled: true
@@ -43,16 +45,21 @@ deploy:
       createNamespace: true
       namespace: default
       setValues:
+        tlsStore:
+          default:
+            defaultCertificate:
+              secretName: wildcard-example-com-tls
         ingressRoute.dashboard:
-          entryPoints: ['websecure', 'web']
-          matchRule: "Host(`traefik.localhost`)"
+          entryPoints: ['websecure']
+          matchRule: "Host(`traefik.knowledgedump.space`)"
 
     - name: authentik
       remoteChart: authentik/authentik
       namespace: default
       setValues:
+
         authentik:
-          secret_key: "PleaseGenerateASecureKey"
+          secret_key: "TODO: PleaseGenerateASecureKey"
           # This sends anonymous usage-data, stack traces on errors and
           # performance data to sentry.io, and is fully opt-in
           error_reporting.enabled: true

@@ -23,6 +23,9 @@ deploy:
     - name: headlamp
       repo: https://headlamp-k8s.github.io/headlamp/
       remoteChart: headlamp
+    - name: gitea
+      repo: https://dl.gitea.com/charts/
+      remoteChart: gitea
     hooks:
       after:
       - host:
@@ -31,7 +34,6 @@ deploy:
           command: ["sh", "-c", "kubectl create token headlamp --namespace default"]
       - host:
           command: ["sh", "-c", "echo '\n*****************************************************\n'"]
-
 # profiles:
 # - name: tools
 #   patches:
